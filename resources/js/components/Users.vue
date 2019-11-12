@@ -21,7 +21,6 @@
                                 <th>ID</th>
                                 <th>Name</th>
                                 <th>Email</th>
-                                <th>Type</th>
                                 <th>Registered At</th>
                                 <th>Action</th>
                             </tr>
@@ -29,10 +28,9 @@
                             <tbody>
                             <tr v-for="user in users" v-bind:key="user.id">
                                 <td>{{user.id}}</td>
-                                <td>{{user.name}}J</td>
-                                <td>{{user.email}}</td>
+                                <td>{{user.name | capitalize}}</td>
+                                <td>{{user.email | capitalize}}</td>
                                 <td>{{user.created_at}}</td>
-                                <td><span class="tag tag-success">Approved</span></td>
                                 <td>
                                     <a href="#">
                                         <i class="fa fa-edit blue"></i>
@@ -112,12 +110,31 @@
                 axios.get('api/user').then(({data}) => this.users = data.data)
             },
             createUser() {
+                this.$Progress.start();
                 this.form.post('api/user')
-                    .then(({ data }) => { console.log(data) })
+                    .then(({ data }) => { console.log(data) });
+
+                $('#exampleModal').modal('hide');
+
+                Toast.fire({
+                    icon: 'success',
+                    title: 'User Created successfully'
+                })
+
+                this.$Progress.finish();
+
+
             }
         },
         created() {
             this.loadUsers();
+        },
+        filters: {
+            capitalize: function (value) {
+                if (!value) return ''
+                value = value.toString()
+                return value.charAt(0).toUpperCase() + value.slice(1)
+            }
         }
     }
 </script>
